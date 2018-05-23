@@ -1,16 +1,29 @@
 #include <iostream>
+#include <utility>
 #include "tga_image.h"
 
 const TGAColor white = TGAColor(255, 255, 255, 255);
 const TGAColor red = TGAColor(255, 0, 0, 255);
 
 void line(int x0, int y0, int x1, int y1, TGAImage &image, const TGAColor &color) {
-    int count = x1 - x0;
+    bool steep = false;
+    if (abs(x1 - x0) < abs(y1 - y0)) {
+        steep = true;
+        std::swap(x0, y0);
+        std::swap(x1, y1);
+    }
+
+    int count = abs(x1 - x0);
+
     for (int t = 0; t < count; t++) {
         int x = x0 * (count - t) / count + x1 * t / count;
         int y = y0 * (count - t) / count + y1 * t / count;
         std::cout << "x: " << x << ", y: " << y << "\n";
-        image.set(x, y, color);
+        if (steep) {
+            image.set(y, x, color);
+        } else {
+            image.set(x, y, color);
+        }
     }
 }
 
